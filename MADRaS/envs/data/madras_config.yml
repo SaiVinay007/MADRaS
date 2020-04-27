@@ -1,6 +1,11 @@
 torcs_server_port: 60934
 server_config:
+<<<<<<< HEAD:MADRaS/envs/data/sim_options.yml
   max_cars: 1
+=======
+  max_cars: 10
+  min_traffic_cars: 1
+>>>>>>> b6033310f3d8097541b16fe40f9e5a80e448c95e:MADRaS/envs/data/madras_config.yml
   track_names:
     # - forza
     # - aalborg
