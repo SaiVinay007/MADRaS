@@ -252,6 +252,7 @@ class TorcsEnv:
         return np.array([r, g, b], dtype=np.uint8)
 
     def make_observation(self, raw_obs):
+        # print("Make observation-------------")
         if self.vision is False:
             names = ['focus',
                      'speedX', 'speedY', 'speedZ', 'angle', 'damage',
@@ -262,6 +263,7 @@ class TorcsEnv:
                      'wheelSpinVel',
                      'distFromStart']
             Observation = col.namedtuple('Observation', names)
+            # print("vision false ,  observation = ", Observation)
             return Observation(focus=np.array(raw_obs['focus'], dtype=madras.floatX)/200.,
                                speedX=np.array(raw_obs['speedX'], dtype=madras.floatX)/self.default_speed,
                                speedY=np.array(raw_obs['speedY'], dtype=madras.floatX)/self.default_speed,
@@ -299,3 +301,4 @@ class TorcsEnv:
                                trackPos=np.array(raw_obs['trackPos'], dtype=madras.floatX)/1.,
                                wheelSpinVel=np.array(raw_obs['wheelSpinVel'], dtype=madras.floatX),
                                img=image_rgb)
+

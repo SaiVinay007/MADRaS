@@ -150,7 +150,7 @@ class Client(object):
         self.name = name
         self.serverPID = None
         self.vision = vision
-        self.host = ''
+        self.host = 'localhost'
         self.visualise=visualise
         self.no_of_visualisations = no_of_visualisations
         self.port = 3001
@@ -176,12 +176,8 @@ class Client(object):
         if d:
             self.debug = d
         self.S = ServerState()
-        # print("Server state done")
         self.R = DriverAction()
-        # print("Driver action done")
         self.setup_connection()
-        # print("setup connection done")
-
         
 
     def setup_connection(self):
@@ -189,9 +185,6 @@ class Client(object):
         logging.debug("{} Trying to set connection".format(self.name))
         try:
             self.so = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            # self.so.bind((self.host, self.port))
-
-            # print("socket created, ", self.so)
         except socket.error as emsg:
             logging.debug("Error: {} Could not create socket...".format(self.name))
             sys.exit(-1)
@@ -209,29 +202,24 @@ class Client(object):
              .5 1 1.7 2.5 4 7 12 19 45"
 
             initmsg = '%s(init %s)' % (self.sid, a)
-            # print(f"Host = {self.host} , Port = {self.port}")
+
             try:
                 logging.debug('{} Trying to establish connection'.format(self.name))
-                # print("sending msg")
                 self.so.sendto(initmsg.encode(), (self.host, self.port))
             except socket.error as emsg:
                 sys.exit(-1)
             sockdata = str()
             try:
-                # print("recieving msg")
                 sockdata, addr = self.so.recvfrom(data_size)
                 sockdata = sockdata.decode('utf-8')
-                # print(sockdata)
             except socket.error as emsg:
-                # print("No data from server")
-                # os.command('pkill torcs')
                 logging.debug("[{}]: SocketError: {}".format(self.name, emsg))
                 logging.debug("{} Waiting for server on {}............".format(self.name, self.port))
                 logging.debug("[{}]: Count Down : {}".format(self.name, n_fail))
                 if n_fail < 0:
                     logging.debug("[{}]: Relaunching torcs in snakeoil".format(self.name))
                     if self.serverPID is not None:
-                        command = 'kill -9 {}'.format(self.serverPID)
+                        command = 'kill {}'.format(self.serverPID)
                         os.system(command)
                         self.serverPID = None
                     time.sleep(1.0)
@@ -250,7 +238,6 @@ class Client(object):
                         command = 'export TORCS_PORT={} && vglrun torcs -t 10000000 -nolaptime'.format(self.port)
                     else:
                         command = 'export TORCS_PORT={} && torcs -t 10000000  -r ~/.torcs/config/raceman/quickrace.xml -nolaptime'.format(self.port)
-                    
                     if self.vision is True:
                         command += ' -vision'
                     self.torcs_proc = subprocess.Popen([command], shell=True, preexec_fn=os.setsid)
@@ -263,10 +250,8 @@ class Client(object):
             if identify in sockdata:
                 data = sockdata.split(':')
                 self.serverPID = int(data[1].rstrip('\x00'))
-                # print(self.name, self.port, self.serverPID)
                 logging.debug("{} Client connected on {}..............".format(self.name, self.port))
                 logging.debug("[{}]: Server PID is {}..............".format(self.name, self.serverPID))
-                # print('done setup connection')
                 break
 
     def parse_the_command_line(self):
@@ -710,7 +695,7 @@ def drive_example(c):
 
 # ================ MAIN ================
 if __name__ == "__main__":
-    C = Client(p=3001)
+    C = Client(p=3001, visualise=False)
     for step in range(C.maxSteps, 0, -1):
         C.get_servers_input(step)
         drive_example(C)

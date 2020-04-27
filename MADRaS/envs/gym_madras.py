@@ -160,7 +160,7 @@ class MadrasEnv(TorcsEnv, gym.Env):
                                                high=np.ones(self.action_dim))
         self.observation_space = self.observation_manager.get_observation_space()
         
-    def test_torcs_server_port(self):
+    def test_torcs_server_port(self, started=False):
         udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
             udp.bind(('', self.torcs_server_port))
@@ -172,7 +172,11 @@ class MadrasEnv(TorcsEnv, gym.Env):
             _, self.torcs_server_port = udp.getsockname()
             logging.info("torcs_server_port has been reassigned to {}".format(
                          self.torcs_server_port))
-
+        # if started:
+        #     print("started")
+        #     sockdata, addr = udp.recvfrom(1024)
+        #     sockdata = sockdata.decode('utf-8')
+        #     print(sockdata)
         udp.close()
 
     def start_torcs_process(self):
@@ -181,7 +185,7 @@ class MadrasEnv(TorcsEnv, gym.Env):
             time.sleep(0.5)
             self.torcs_proc = None
 
-        self.test_torcs_server_port()
+        self.test_torcs_server_port(False)
 
         if self._config.traffic:
             self.traffic_manager = traffic.MadrasTrafficManager(
@@ -203,10 +207,13 @@ class MadrasEnv(TorcsEnv, gym.Env):
             command = 'export TORCS_PORT={} && vglrun torcs -t 10000000 -nolaptime'.format(self.torcs_server_port)
         else:
             command = 'export TORCS_PORT={} && torcs -t 10000000 -r ~/.torcs/config/raceman/quickrace.xml -nolaptime'.format(self.torcs_server_port)
+        
         if self._config.vision is True:
             command += ' -vision'
         if self._config.noisy_observations:
             command += ' -noisy'
+
+        self.test_torcs_server_port(True)
 
         self.torcs_proc = subprocess.Popen([command], shell=True, preexec_fn=os.setsid)
         time.sleep(1)
@@ -234,7 +241,7 @@ class MadrasEnv(TorcsEnv, gym.Env):
                     self.ob, self.client = TorcsEnv.reset(self, client=self.client, relaunch=True)
                 except Exception:
                     self.wait_for_observation()
-
+                    # print("wait for observation done -----------")
                 if not np.any(np.asarray(self.ob.track) < 0):
                     break
                 else:
@@ -255,7 +262,6 @@ class MadrasEnv(TorcsEnv, gym.Env):
         """Refresh client and wait for a valid observation to come in."""
         self.ob = None
         while self.ob is None:
-
             logging.debug("{} Still waiting for observation".format(self.name))
 
             try:

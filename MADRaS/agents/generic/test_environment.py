@@ -10,8 +10,11 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 def test_madras_vanilla():
     env = MadrasEnv()
+    # print("Started env")
     logging.info("Testing reset...")
+    # os.system("pkill torcs")
     obs = env.reset()
+    exit()
     logging.info("Initial observation: {}."
                  " Verify if the number of dimensions {} is right.".format(obs, len(obs)))
     logging.info("Testing step...")
@@ -33,8 +36,8 @@ def test_madras_pid():
     for t in range(20000):
         obs, r, done, _ = env.step([0.0, 1.0])
         logging.info("{}: reward={}, done={}".format(t, r, done))
-        if done:
-            env.reset()
+        # if done:
+        #     env.reset()
     os.system("pkill torcs")
 
 

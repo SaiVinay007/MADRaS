@@ -100,6 +100,7 @@ class SingleAgentSimpleLapObs(MadrasObs):
                         full_obs.speedX,
                         full_obs.speedY,
                         full_obs.speedZ))
+        obs = np.clip(obs, 0,1)
         return obs
     
     @property
@@ -129,6 +130,7 @@ class SingleAgentInTrafficObs(MadrasObs):
                         full_obs.speedY,
                         full_obs.speedZ,
                         full_obs.opponents))
+        obs = np.clip(obs, 0,1)
         return obs
     
     @property

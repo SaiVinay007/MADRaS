@@ -44,9 +44,9 @@ class TorcsConfig(object):
         self.track_names = cfg["track_names"] if  "track_names" in cfg else TRACK_NAMES
         self.distance_to_start = cfg["distance_to_start"] if "distance_to_start" in cfg else 0
         self.torcs_server_config_dir = (cfg["torcs_server_config_dir"] if "torcs_server_config_dir" in cfg
-                                        else "/home/anirban/.torcs/config/raceman/")
+                                        else "/home/saivinay/.torcs/config/raceman/")
         self.scr_server_config_dir = (cfg["scr_server_config_dir"] if "scr_server_config_dir" in cfg
-                                          else "/home/anirban/usr/local/share/games/torcs/drivers/scr_server/")
+                                          else "/home/saivinay/usr/local/share/games/torcs/drivers/scr_server/")
         with open(QUICKRACE_TEMPLATE_PATH, 'r') as f:
             self.quickrace_template = f.read()
         with open(CAR_CONFIG_TEMPATE_PATH, 'r') as f:
