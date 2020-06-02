@@ -87,7 +87,6 @@ class TorcsObs(MadrasObs):
                              -np.inf, 0., -np.inf, 0],
                              dtype=MadrasDatatypes.floatX)
             observation_space = spaces.Box(low=low, high=high)
-
         return observation_space
 
 
@@ -125,7 +124,6 @@ class SingleAgentSimpleLapObs(MadrasObs):
                           dtype=MadrasDatatypes.floatX)
 
         observation_space = spaces.Box(low=low, high=high)
-
         return observation_space
 
 
@@ -147,12 +145,13 @@ class SingleAgentInTrafficObs(MadrasObs):
                         full_obs.speedX,
                         full_obs.speedY,
                         full_obs.speedZ,
-<<<<<<< HEAD:MADRaS/utils/observation_manager.py
-                        full_obs.opponents))
-        obs = np.clip(obs, 0,1)
-=======
                         opponents))
->>>>>>> b6033310f3d8097541b16fe40f9e5a80e448c95e:MADRaS/utils/observation_handler.py
+
+# <<<<<<< HEAD:MADRaS/utils/observation_manager.py
+                        # full_obs.opponents))
+# =======
+        # obs = np.clip(obs, 0,1)
+        # print(obs)
         return obs
     
     @property
@@ -166,7 +165,6 @@ class SingleAgentInTrafficObs(MadrasObs):
                           dtype=MadrasDatatypes.floatX)
         low = np.asarray([-1] + 19*[0] + [-np.inf] + 3*[-np.inf] + 36*[0],
                           dtype=MadrasDatatypes.floatX)
-
         observation_space = spaces.Box(low=low, high=high)
 
         return observation_space

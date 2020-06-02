@@ -250,7 +250,6 @@ class MadrasEnv(TorcsEnv, gym.Env):
                     break
                 else:
                     logging.info("Reset: Reset failed as agent started off track. Retrying...")
-
         self.distance_traversed = 0
         s_t = self.observation_handler.get_obs(self.ob, self._config)
         if self._config.pid_assist:
@@ -321,7 +320,6 @@ class MadrasEnv(TorcsEnv, gym.Env):
 
         info["distRaced"] = self.client.S.d["distRaced"] 
         info["racePos"] = self.client.S.d["racePos"]
-
         return next_obs, reward, done, info
 
 
@@ -373,7 +371,6 @@ class MadrasEnv(TorcsEnv, gym.Env):
         next_obs = self.observation_handler.get_obs(self.ob, self._config)
         info["distRaced"] = self.client.S.d["distRaced"]
         info["racePos"] = self.client.S.d["racePos"]
-
         return next_obs, reward, done, info
 
     def step(self, action):

@@ -24,16 +24,20 @@ config["vf_clip_param"] = 20  # originally it was 10. We should consider scaling
 trainer = ppo.PPOTrainer(config=config, env="madras_env")
 
 # Can optionally call trainer.restore(path) to load a checkpoint.
-checkpoint_dir = '/home/saivinay/ray_results/PPO_madras_env_2020-04-21_14-37-30w9053t6s/'
+checkpoint_dir = '/home/saivinay/ray_results/PPO_madras_env_2020-05-20_12-48-02ghj0ji1k/'
 # temp = os.listdir(checkpoint_dir)
 # temp = glob.glob(checkpoint_dir+'/checkpoint*')
-path = checkpoint_dir+'checkpoint_291/checkpoint_291'
+path = checkpoint_dir+'checkpoint_121/checkpoint-121'
 
-if os.path.exists(path):
-    print('Restored')
-    trainer.restore(path)
+# To continue from checkpoint
+# if os.path.exists(path):
+#     print('Restored')
+#     trainer.restore(path)
 
-iterations = 300
+# policy = trainer.get_policy()
+# print(policy.model.base_model.summary())
+
+iterations = 1000
 
 for i in range(iterations):
    # Perform one iteration of training the policy with PPO
