@@ -176,11 +176,8 @@ class Client(object):
         if d:
             self.debug = d
         self.S = ServerState()
-        # print("Server state done")
         self.R = DriverAction()
-        # print("Driver action done")
         self.setup_connection()
-        # print("setup connection done")
 
         
 

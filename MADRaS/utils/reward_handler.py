@@ -187,3 +187,14 @@ class SuccessfulOvertakeReward(MadrasReward):
             self.rank = game_state["racePos"]
             reward = self.cfg["scale"]
         return reward
+
+
+class AccBrakePenality(MadrasReward):
+    def __init__(self, cfg):
+        super().__init__(AccBrakePenality, self).__init__(cfg)
+    
+    def compute_reward(self, game_config, game_state):
+        
+        return super().compute_reward(game_config, game_state)
+
+    

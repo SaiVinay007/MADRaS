@@ -120,21 +120,24 @@ class TorcsEnv:
         client.respond_to_server()
         # Get the response of TORCS
         code = client.get_servers_input(step)
-
+        
         if code==-1:
             client.R.d['meta'] = True
             logging.debug('Terminating because server stopped responding')
+            print("code is -1 ")
+            obs_pre = self.make_observation(obs_pre)
             return obs_pre, 0, client.R.d['meta'], {'termination_cause':'hardReset'}
 
         # Get the current full-observation from torcs
         obs = client.S.d
-
+        
         # Make an obsevation from a raw observation vector from TORCS
         self.observation = self.make_observation(obs)
         self.currState = np.hstack((self.observation.angle, self.observation.track, self.observation.trackPos, 
                                     self.observation.speedX, self.observation.speedY,  self.observation.speedZ, 
                                     self.observation.wheelSpinVel/100.0, self.observation.rpm))
 
+        
         # direction-dependent positive reward
         track = np.array(obs['track'])
         trackPos = np.array(obs['trackPos'])
@@ -166,6 +169,7 @@ class TorcsEnv:
             self.initial_run = False
 
         self.time_step += 1
+
         return self.observation, reward, episode_terminate, {}
 
 
