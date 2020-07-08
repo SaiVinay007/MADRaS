@@ -172,3 +172,23 @@ class Rank1(MadrasDone):
 
     def reset(self):
         self.num_steps = 0
+
+
+class LessProgress(MadrasDone):
+    # Stop if after 2000 steps distance traversed is less than 30
+    def __init__(self):
+        self.num_steps = 0
+
+    def check_done(self, game_config, game_state):
+        self.num_steps += 1
+        progress = game_state["distance_traversed"]
+        if self.num_steps >= 2000 and progress<30:
+            logging.info("Done: Episode terminated because agent"
+                         " has progress {} even after {} steps.".format(progress, self.num_steps))
+            self.num_steps = 0
+            return True
+        else:
+            return False
+
+    def reset(self):
+        self.num_steps = 0

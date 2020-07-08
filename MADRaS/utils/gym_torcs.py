@@ -114,7 +114,7 @@ class TorcsEnv:
 
         # Save the previous full-obs from torcs for the reward calculation
         obs_pre = copy.deepcopy(client.S.d)
-
+        # print(action_torcs)
         # One-Step Dynamics Update #################################
         # Apply the Agent's action into torcs
         client.respond_to_server()
@@ -123,7 +123,8 @@ class TorcsEnv:
         
         if code==-1:
             client.R.d['meta'] = True
-            logging.debug('Terminating because server stopped responding')
+            # logging.debug('Terminating because server stopped responding')
+            logging.info('Terminating because server stopped responding')
             print("code is -1 ")
             obs_pre = self.make_observation(obs_pre)
             return obs_pre, 0, client.R.d['meta'], {'termination_cause':'hardReset'}

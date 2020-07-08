@@ -40,7 +40,7 @@ path_and_file = os.path.realpath(__file__)
 path, file = os.path.split(path_and_file)
 DEFAULT_MADRAS_CONFIG_FILE = os.path.join(path, "data", "madras_config.yml")
 
-
+import traceback, sys
 
 class MadrasConfig(object):
     """Configuration class for MADRaS Gym environment."""
@@ -108,6 +108,7 @@ def parse_yaml(yaml_file):
 
 class MadrasEnv(TorcsEnv, gym.Env):
     """Definition of the Gym Madras Environment."""
+
     def __init__(self, cfg_path=None):
         # If `visualise` is set to False torcs simulator will run in headless mode
         self.step_num = 0
@@ -241,11 +242,11 @@ class MadrasEnv(TorcsEnv, gym.Env):
 
         else:
             while True:
+                print('In reset not initial reset')
                 try:
                     self.ob, self.client = TorcsEnv.reset(self, client=self.client, relaunch=True)
                 except Exception:
                     self.wait_for_observation()
-                    # print("wait for observation done -----------")
                 if not np.any(np.asarray(self.ob.track) < 0):
                     break
                 else:
@@ -265,6 +266,7 @@ class MadrasEnv(TorcsEnv, gym.Env):
         """Refresh client and wait for a valid observation to come in."""
         self.ob = None
         while self.ob is None:
+            print('In wait for observation')
             logging.debug("{} Still waiting for observation".format(self.name))
 
             try:
@@ -281,12 +283,25 @@ class MadrasEnv(TorcsEnv, gym.Env):
             except:
                 pass
 
+    def clip(self, v, lo, hi):
+        if v < lo:
+            return lo
+        elif v > hi:
+            return hi
+        else:
+            return v
+            
     def step_vanilla(self, action):
         """Execute single step with steer, acceleration, brake controls."""
         if self._config.normalize_actions:
-            action[1] = (action[1] + 1) / 2.0  # acceleration back to [0, 1]
-            action[2] = (action[2] + 1) / 2.0  # brake back to [0, 1]
+            # action[1] = (action[1] + 1) / 2.0  # acceleration back to [0, 1]
+            # action[2] = (action[2] + 1) / 2.0  # brake back to [0, 1]
+            action[0] = self.clip(action[0], -1, 1)
+            action[1] = self.clip(action[1], 0, 1)
+            action[2] = self.clip(action[2], 0, 1)
 
+
+        # print(action)
         r = 0.0
         try:
             self.ob, r, done, info = TorcsEnv.step(self, 0,
@@ -298,6 +313,9 @@ class MadrasEnv(TorcsEnv, gym.Env):
             logging.debug("Exception {} caught at port {}".format(str(e), self.torcs_server_port))
 
             self.wait_for_observation()
+        
+        if done:
+            print('torce_done is True')
 
         game_state = {"torcs_reward": r,
                       "torcs_done": done,
@@ -307,16 +325,18 @@ class MadrasEnv(TorcsEnv, gym.Env):
                       "trackPos": self.client.S.d["trackPos"],
                       "racePos": self.client.S.d["racePos"],
                       "track": self.client.S.d["track"]}
-        reward = self.reward_handler.get_reward(self._config, game_state)
+        reward = self.reward_handler.get_reward(self._config, game_state, action)
 
         done = self.done_handler.get_done_signal(self._config, game_state)
-
-        next_obs = self.observation_handler.get_obs(self.ob, self._config)
         if done:
             if self._config.traffic:
                 self.traffic_manager.kill_all_traffic_agents()
             self.client.R.d["meta"] = True  # Terminate the episode
             logging.info('Terminating PID {}'.format(self.client.serverPID))
+            # print(self.ob)
+        
+        next_obs = self.observation_handler.get_obs(self.ob, self._config)
+        
 
         info["distRaced"] = self.client.S.d["distRaced"] 
         info["racePos"] = self.client.S.d["racePos"]
@@ -374,6 +394,7 @@ class MadrasEnv(TorcsEnv, gym.Env):
         return next_obs, reward, done, info
 
     def step(self, action):
+        # print('In step')
         self.step_num += 1
         if self._config.add_noise_to_actions:
             noise = np.random.normal(scale=self._config.action_noise_std, size=self.action_dim)
