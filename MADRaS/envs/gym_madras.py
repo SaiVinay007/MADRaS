@@ -109,7 +109,7 @@ def parse_yaml(yaml_file):
 class MadrasEnv(TorcsEnv, gym.Env):
     """Definition of the Gym Madras Environment."""
 
-    def __init__(self, cfg_path=None):
+    def __init__(self, cfg_path=None, evaluate=False):
         # If `visualise` is set to False torcs simulator will run in headless mode
         self.step_num = 0
         self._config = MadrasConfig()
@@ -133,6 +133,8 @@ class MadrasEnv(TorcsEnv, gym.Env):
         self.seed()
         self.torcs_server_config = torcs_config.TorcsConfig(
             self._config.server_config, randomize=self._config.randomize_env)
+        if evaluate:
+            self._config.visualise = True
         self.start_torcs_process()
 
     def validate_config(self):
@@ -282,6 +284,10 @@ class MadrasEnv(TorcsEnv, gym.Env):
                 self.ob = self.make_observation(raw_ob)
             except:
                 pass
+    
+    def end(self):
+        command = 'kill {}'.format(self.client.serverPID)
+        os.system(command)
 
     def clip(self, v, lo, hi):
         if v < lo:
@@ -334,7 +340,9 @@ class MadrasEnv(TorcsEnv, gym.Env):
             self.client.R.d["meta"] = True  # Terminate the episode
             logging.info('Terminating PID {}'.format(self.client.serverPID))
             # print(self.ob)
-        
+
+
+
         next_obs = self.observation_handler.get_obs(self.ob, self._config)
         
 
