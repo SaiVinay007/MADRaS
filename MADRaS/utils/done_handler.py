@@ -149,6 +149,7 @@ class OutOfTrack(MadrasDone):
             np.any(np.asarray(game_state["track"]) < 0)):
             logging.info("Done: Episode terminated because agent went out of track after {} steps.".format(self.num_steps))
             self.num_steps = 0
+            print("progress ==================== ", game_state["distance_traversed"])
             return True
         else:
             return False

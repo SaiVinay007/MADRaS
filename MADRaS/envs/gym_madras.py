@@ -332,7 +332,6 @@ class MadrasEnv(TorcsEnv, gym.Env):
                       "racePos": self.client.S.d["racePos"],
                       "track": self.client.S.d["track"]}
         reward = self.reward_handler.get_reward(self._config, game_state, action)
-
         done = self.done_handler.get_done_signal(self._config, game_state)
         if done:
             if self._config.traffic:

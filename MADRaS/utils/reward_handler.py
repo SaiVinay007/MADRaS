@@ -24,8 +24,9 @@ class RewardHandler(object):
         tmp = []
         for reward_function in self.rewards.values():
             # print(reward_function)
-            reward += reward_function.compute_reward(game_config, game_state, action)
-            tmp.append(reward_function.compute_reward(game_config, game_state, action))
+            val =  reward_function.compute_reward(game_config, game_state, action)
+            reward += val
+            tmp.append(val)
         # print(tmp)
         if math.isnan(reward):
             reward = 0.0
@@ -85,10 +86,12 @@ class ProgressReward(MadrasReward):
 
 class ProgressReward2(ProgressReward):
     def compute_reward(self, game_config, game_state, action=None):
-        target_speed = game_config.target_speed / 50  # m/step
+        # target_speed = game_config.target_speed / 50  # m/step
+        target_speed = game_config.target_speed / 10  # m/step
         progress = game_state["distance_traversed"] - self.prev_dist
         reward = self.cfg["scale"] * np.min([1.0, progress/target_speed])
         self.prev_dist = deepcopy(game_state["distance_traversed"])
+        # print(" ProgressReward = ", reward, " progress = ", progress, " target_speed = ", target_speed, "current speed = ", progress/target_speed)
         return reward
 
 
@@ -260,22 +263,40 @@ class ContSteerPenality(MadrasReward):
         if self.count >= self.cfg["count"]:
             reward = - self.cfg["scale"]
             self.count = 0
+            print("ContSteerPenality")
             return reward
         else:
             return 0 
 
 
-def OutOfTrackReward(MadrasReward):
+class OutOfTrackPenality(MadrasReward):
     def __init__(self, cfg):
-        self.num_steps = 0
+        super(OutOfTrackPenality, self).__init__(cfg)
 
     def compute_reward(self, game_config, game_state, action=None):
         self.track_limits = game_config.track_limits
-        self.num_steps += 1
         if (game_state["trackPos"] < self.track_limits['low'] or 
             game_state["trackPos"] > self.track_limits['high'] or 
             np.any(np.asarray(game_state["track"]) < 0)):
+            reward = -self.cfg["scale"] 
+            print("out of track penality", reward)
+            return reward
+        else:
+            return 0
+
+
+class LessProgressPenality(MadrasReward):
+    def __init__(self, cfg):
+        self.num_steps = 0
+        super(LessProgressPenality, self).__init__(cfg)
+
+    def compute_reward(self, game_config, game_state, action=None):
+        self.num_steps += 1
+        progress = game_state["distance_traversed"]
+        if self.num_steps >= self.cfg["steps"] and progress<self.cfg["progress"]:
             self.num_steps = 0
-            return self.cfg["scale"]
+            reward = - self.cfg["scale"]
+            print("LessProgressPenality", reward)
+            return reward
         else:
             return 0
