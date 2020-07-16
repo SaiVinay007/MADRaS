@@ -4,8 +4,9 @@ torcs_server_port: 60934
 server_config:
   max_cars: 1
   track_names:
-    # - aalborg
-    - g-track-2
+    # - aalborg       # hard
+    # - g-track-2   # easy 
+    - e-track-2
   distance_to_start: 25
   torcs_server_config_dir: /home/saivinay/.torcs/config/raceman/  # This must be the value for TORCS with rendering on
   scr_server_config_dir: /home/saivinay/usr/local/share/games/torcs/drivers/scr_server/
@@ -72,9 +73,9 @@ rewards:
     scale: 5.0  
     steps: 500
     progress: 10
-  ContSteerPenality:
-    scale: 10.0
-    count: 50
+  # ContSteerPenality:
+  #   scale: 10.0
+  #   count: 50
   OutOfTrackPenality:
     scale: 70.0
   # StayStillPenality:
@@ -91,7 +92,188 @@ dones:
   - TorcsDone
 
 
-
+# Traffic agents
+# traffic:
+#   - ParkedAgent:
+#       target_speed: 50
+#       parking_lane_pos:
+#         low: -0.8
+#         high: 0.0
+#       parking_dist_from_start:
+#         low: 185
+#         high: 200
+#       collision_time_window: 1.2
+#       pid_settings:
+#         accel_pid:
+#           - 10.5  # a_x
+#           - 0.05  # a_y
+#           - 2.8   # a_z
+#         steer_pid:
+#           - 5.1
+#           - 0.001
+#           - 0.000001
+#         accel_scale: 1.0
+#         steer_scale: 0.1
+#   - ParkedAgent:
+#       target_speed: 50
+#       parking_lane_pos:
+#         low: 0.0
+#         high: 0.8
+#       parking_dist_from_start:
+#         low: 165
+#         high: 180
+#       collision_time_window: 1.2
+#       pid_settings:
+#         accel_pid:
+#           - 10.5  # a_x
+#           - 0.05  # a_y
+#           - 2.8   # a_z
+#         steer_pid:
+#           - 5.1
+#           - 0.001
+#           - 0.000001
+#         accel_scale: 1.0
+#         steer_scale: 0.1
+#   - ParkedAgent:
+#       target_speed: 50
+#       parking_lane_pos:
+#         low: -0.8
+#         high: 0.0
+#       parking_dist_from_start:
+#         low: 145
+#         high: 160
+#       collision_time_window: 1.2
+#       pid_settings:
+#         accel_pid:
+#           - 10.5  # a_x
+#           - 0.05  # a_y
+#           - 2.8   # a_z
+#         steer_pid:
+#           - 5.1
+#           - 0.001
+#           - 0.000001
+#         accel_scale: 1.0
+#         steer_scale: 0.1
+#   - ParkedAgent:
+#       target_speed: 50
+#       parking_lane_pos:
+#         low: 0.0
+#         high: 0.8
+#       parking_dist_from_start:
+#         low: 125
+#         high: 140
+#       collision_time_window: 1.2
+#       pid_settings:
+#         accel_pid:
+#           - 10.5  # a_x
+#           - 0.05  # a_y
+#           - 2.8   # a_z
+#         steer_pid:
+#           - 5.1
+#           - 0.001
+#           - 0.000001
+#         accel_scale: 1.0
+#         steer_scale: 0.1
+#   - ParkedAgent:
+#       target_speed: 50
+#       parking_lane_pos:
+#         low: -0.8
+#         high: 0.0
+#       parking_dist_from_start:
+#         low: 100
+#         high: 120
+#       collision_time_window: 1.2
+#       pid_settings:
+#         accel_pid:
+#           - 10.5  # a_x
+#           - 0.05  # a_y
+#           - 2.8   # a_z
+#         steer_pid:
+#           - 5.1
+#           - 0.001
+#           - 0.000001
+#         accel_scale: 1.0
+#         steer_scale: 0.1
+#   - ParkedAgent:
+#       target_speed: 50
+#       parking_lane_pos:
+#         low: 0.0
+#         high: 0.8
+#       parking_dist_from_start:
+#         low: 80
+#         high: 95
+#       collision_time_window: 1.2
+#       pid_settings:
+#         accel_pid:
+#           - 10.5  # a_x
+#           - 0.05  # a_y
+#           - 2.8   # a_z
+#         steer_pid:
+#           - 5.1
+#           - 0.001
+#           - 0.000001
+#         accel_scale: 1.0
+#         steer_scale: 0.1
+#   - ParkedAgent:
+#       target_speed: 50
+#       parking_lane_pos:
+#         low: -0.8
+#         high: 0.0
+#       parking_dist_from_start:
+#         low: 50
+#         high: 75
+#       collision_time_window: 1.2
+#       pid_settings:
+#         accel_pid:
+#           - 10.5  # a_x
+#           - 0.05  # a_y
+#           - 2.8   # a_z
+#         steer_pid:
+#           - 5.1
+#           - 0.001
+#           - 0.000001
+#         accel_scale: 1.0
+#         steer_scale: 0.1
+#   - ParkedAgent:
+#       target_speed: 50
+#       parking_lane_pos:
+#         low: 0.0
+#         high: 0.8
+#       parking_dist_from_start:
+#         low: 30
+#         high: 45
+#       collision_time_window: 1.2
+#       pid_settings:
+#         accel_pid:
+#           - 10.5  # a_x
+#           - 0.05  # a_y
+#           - 2.8   # a_z
+#         steer_pid:
+#           - 5.1
+#           - 0.001
+#           - 0.000001
+#         accel_scale: 1.0
+#         steer_scale: 0.1
+#   - ParkedAgent:
+#       target_speed: 50
+#       parking_lane_pos:
+#         low: -0.8
+#         high: 0.0
+#       parking_dist_from_start:
+#         low: 15
+#         high: 25
+#       collision_time_window: 1.2
+#       pid_settings:
+#         accel_pid:
+#           - 10.5  # a_x
+#           - 0.05  # a_y
+#           - 2.8   # a_z
+#         steer_pid:
+#           - 5.1
+#           - 0.001
+#           - 0.000001
+#         accel_scale: 1.0
+#         steer_scale: 0.1
   # - ConstVelTrafficAgent:
   #     target_speed: 50
   #     target_lane_pos: -0.5
